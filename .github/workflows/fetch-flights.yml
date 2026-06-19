@@ -1,0 +1,29 @@
+name: Fetch Vienna Flights
+
+on:
+  schedule:
+    - cron: '*/20 * * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch OpenSky data for Vienna bbox
+        run: |
+          curl -sS --fail \
+            "https://opensky-network.org/api/states/all?lamin=48.05&lomin=16.15&lamax=48.35&lomax=16.55" \
+            -o plugins/planes-vienna/data/flights.json
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add plugins/planes-vienna/data/flights.json
+          git diff --staged --quiet || git commit -m "Update Vienna flight data"
+          git push

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=800">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #fff;
+      color: #000;
+      font-family: 'Courier New', Courier, monospace;
+      width: 800px;
+      height: 480px;
+      overflow: hidden;
+      padding: 20px 24px 16px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      border-bottom: 2px solid #000;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      opacity: 0.5;
+      text-transform: uppercase;
+    }
+
+    .timestamp {
+      font-size: 11px;
+      opacity: 0.45;
+      letter-spacing: 0.05em;
+    }
+
+    /* Table */
+    .table-wrap {
+      width: 100%;
+    }
+
+    .col-headers {
+      display: grid;
+      grid-template-columns: 90px 110px 1fr 68px 70px 62px 62px;
+      padding: 0 2px 5px;
+      border-bottom: 1px solid #000;
+      margin-bottom: 4px;
+    }
+
+    .col-hdr {
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.45;
+      font-weight: normal;
+    }
+
+    .col-hdr.right { text-align: right; }
+
+    .flight-row {
+      display: grid;
+      grid-template-columns: 90px 110px 1fr 68px 70px 62px 62px;
+      padding: 5px 2px;
+      border-bottom: 1px solid #e0e0e0;
+      align-items: center;
+    }
+
+    .flight-row:last-child { border-bottom: none; }
+
+    .cell {
+      font-size: 13px;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cell.callsign {
+      font-size: 15px;
+      font-weight: bold;
+      letter-spacing: 0.06em;
+    }
+
+    .cell.country {
+      font-size: 12px;
+      opacity: 0.65;
+    }
+
+    .cell.route {
+      font-size: 12px;
+      opacity: 0.75;
+    }
+
+    .cell.num {
+      text-align: right;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cell.alt-high { font-weight: bold; }
+    .cell.on-ground {
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      opacity: 0.45;
+      text-align: right;
+    }
+
+    /* Arrow for heading */
+    .heading-arrow {
+      display: inline-block;
+      font-size: 12px;
+      margin-right: 3px;
+      opacity: 0.6;
+    }
+
+    /* Footer */
+    .footer {
+      position: absolute;
+      bottom: 14px;
+      left: 24px;
+      right: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #ddd;
+      padding-top: 7px;
+    }
+
+    .footer-stat {
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      opacity: 0.5;
+      text-transform: uppercase;
+    }
+
+    .footer-stat strong {
+      font-size: 13px;
+      opacity: 1;
+      color: #000;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #000;
+      margin-right: 5px;
+      vertical-align: middle;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    /* Empty / loading state */
+    .state-msg {
+      padding: 60px 0;
+      text-align: center;
+      font-size: 13px;
+      opacity: 0.4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* Highlight the fastest / highest */
+    .highlight-row .cell.callsign { text-decoration: underline; text-underline-offset: 3px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <span class="title">✈ Vienna Airspace</span>
+    <span class="subtitle">48.05–48.35°N · 16.15–16.55°E</span>
+  </div>
+  <span class="timestamp" id="ts">–</span>
+</div>
+
+<div class="table-wrap">
+  <div class="col-headers">
+    <span class="col-hdr">Callsign</span>
+    <span class="col-hdr">Country</span>
+    <span class="col-hdr">Heading</span>
+    <span class="col-hdr right">Alt (m)</span>
+    <span class="col-hdr right">Speed km/h</span>
+    <span class="col-hdr right">↕ m/s</span>
+    <span class="col-hdr right">Status</span>
+  </div>
+  <div id="flight-list">
+    <div class="state-msg">Fetching airspace data…</div>
+  </div>
+</div>
+
+<div class="footer">
+  <span class="footer-stat"><span class="status-dot"></span>Synced via GitHub Action · ~20min cadence</span>
+  <span class="footer-stat" id="footer-count">–</span>
+  <span class="footer-stat">Source: OpenSky Network</span>
+</div>
+
+<script>
+  // OpenSky blocks cross-origin browser fetches and anonymous keys are rate-limited
+  // (~400 credits/day, ~4 credits/query) — a GitHub Action polls OpenSky server-side
+  // every 20min and commits the result here, which we fetch instead.
+  const API = 'https://raw.githubusercontent.com/hbarquanta/trmnl-plugins/main/plugins/planes-vienna/data/flights.json';
+  const MAX_ROWS = 11;
+
+  // Cardinal heading from degrees
+  function heading(deg) {
+    if (deg == null) return '–';
+    const dirs = ['N','NE','E','SE','S','SW','W','NW','N'];
+    const arrow = ['↑','↗','→','↘','↓','↙','←','↖','↑'];
+    const i = Math.round(deg / 45) % 8;
+    return `<span class="heading-arrow">${arrow[i]}</span>${dirs[i]}`;
+  }
+
+  function fmt(val, decimals = 0, fallback = '–') {
+    if (val == null || isNaN(val)) return fallback;
+    return Number(val).toFixed(decimals);
+  }
+
+  function kmh(ms) {
+    if (ms == null) return '–';
+    return Math.round(ms * 3.6).toString();
+  }
+
+  function renderFlights(states) {
+    const list = document.getElementById('flight-list');
+    const counter = document.getElementById('footer-count');
+
+    if (!states || states.length === 0) {
+      list.innerHTML = '<div class="state-msg">No aircraft currently in Vienna airspace</div>';
+      counter.textContent = '0 aircraft';
+      return;
+    }
+
+    // Filter: prefer airborne, sort by altitude desc
+    const airborne = states.filter(s => !s[8]); // on_ground = false
+    const grounded = states.filter(s => s[8]);
+    const sorted = [
+      ...airborne.sort((a, b) => (b[13] || b[7] || 0) - (a[13] || a[7] || 0)),
+      ...grounded
+    ].slice(0, MAX_ROWS);
+
+    counter.textContent = `${states.length} aircraft · ${airborne.length} airborne`;
+
+    const rows = sorted.map((s, idx) => {
+      const [icao24, callsign, country, , , lon, lat, baro_alt, on_ground,
+             velocity, true_track, vert_rate, , geo_alt] = s;
+
+      const cs = (callsign || icao24 || '???').trim();
+      const alt = geo_alt || baro_alt;
+      const altClass = alt > 8000 ? 'alt-high' : '';
+      const vr = vert_rate != null ? (vert_rate > 0.5 ? `+${fmt(vert_rate,1)}` : vert_rate < -0.5 ? fmt(vert_rate,1) : '≈0') : '–';
+
+      return `
+        <div class="flight-row${idx === 0 ? ' highlight-row' : ''}">
+          <span class="cell callsign">${cs}</span>
+          <span class="cell country">${country || '–'}</span>
+          <span class="cell">${heading(true_track)}</span>
+          <span class="cell num ${altClass}">${on_ground ? '–' : fmt(alt, 0)}</span>
+          <span class="cell num">${kmh(velocity)}</span>
+          <span class="cell num">${vr}</span>
+          <span class="cell num">${on_ground ? '<span class="on-ground">GROUND</span>' : '↑'}</span>
+        </div>`;
+    }).join('');
+
+    list.innerHTML = rows;
+  }
+
+  function updateTime() {
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    document.getElementById('ts').textContent =
+      `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  }
+
+  async function fetchFlights() {
+    updateTime();
+    try {
+      const res = await fetch(API);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      renderFlights(data.states);
+    } catch (err) {
+      const list = document.getElementById('flight-list');
+      list.innerHTML = `<div class="state-msg">Could not reach OpenSky API — ${err.message}</div>`;
+    }
+  }
+
+  // Re-fetch the static JSON every 60s (cheap, GitHub-served) — underlying
+  // data only changes when the GH Action commits, roughly every 20min.
+  fetchFlights();
+  setInterval(fetchFlights, 60000);
+  setInterval(updateTime, 1000);
+</script>
+</body>
+</html>
