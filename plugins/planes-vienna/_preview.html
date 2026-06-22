@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Local preview — not part of the deployed plugin</title>
+<link rel="stylesheet" href="https://trmnl.com/css/latest/plugins.css">
+<script src="https://trmnl.com/js/latest/plugins.js"></script>
+<style>body { background: #888; margin: 0; padding: 40px; }</style>
+</head>
+<body>
+<div class="screen screen--4bit screen--og screen--scale-regular">
+  <div class="view view--full" id="plugin-mount"></div>
+</div>
+<script>
+  fetch('plugin.html').then(r => r.text()).then(html => {
+    document.getElementById('plugin-mount').innerHTML = html;
+    const scripts = document.getElementById('plugin-mount').querySelectorAll('script');
+    scripts.forEach(old => {
+      const s = document.createElement('script');
+      s.textContent = old.textContent;
+      old.replaceWith(s);
+    });
+  });
+</script>
+</body>
+</html>

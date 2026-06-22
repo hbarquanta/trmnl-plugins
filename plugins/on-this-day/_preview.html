@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>On This Day — TRMNL X Preview</title>
+  <style>
+    body {
+      background: #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      gap: 16px;
+    }
+    .label {
+      color: #666;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .frame {
+      width: 936px;   /* 1872 / 2 */
+      height: 702px;  /* 1404 / 2 */
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    iframe {
+      width: 1872px;
+      height: 1404px;
+      border: none;
+      transform: scale(0.5);
+      transform-origin: top left;
+      pointer-events: none;
+    }
+    /* TRMNL X title bar styles (mirrored from trmnl CSS) */
+  </style>
+</head>
+<body>
+  <div class="label">TRMNL X Preview — 1872 × 1404 px · no title bar · shown at 50%</div>
+  <div class="frame">
+    <iframe src="plugin.html"></iframe>
+  </div>
+  <div class="label">On This Day — Wikipedia Historical Events Plugin</div>
+</body>
+</html>

@@ -1,0 +1,413 @@
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* TRMNL X: 1872 × 1404 px · 4:3 · 16-level grayscale · no title bar */
+  html, body { height: 100%; overflow: hidden; font-family: Georgia, 'Times New Roman', serif; }
+
+  .layout {
+    height: 100% !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+  }
+
+  /* ═══ ROOT ═══════════════════════════════════════════════════════ */
+  .otd-root {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    color: #111;
+    overflow: hidden;
+  }
+
+  /* ═══ HEADER ═════════════════════════════════════════════════════ */
+  .otd-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 28px 60px 20px;
+    border-bottom: 6px solid #111;
+  }
+
+  .otd-date {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+  }
+  .otd-day {
+    font-size: 84px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: #111;
+  }
+  .otd-month {
+    font-size: 38px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #111;
+    font-style: italic;
+  }
+
+  .otd-meta {
+    text-align: right;
+    padding-bottom: 4px;
+  }
+  .otd-label {
+    font-size: 16px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #888;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+  }
+  .otd-counts {
+    font-size: 19px;
+    color: #bbb;
+    margin-top: 6px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+    letter-spacing: 0.04em;
+  }
+
+  /* ═══ FEATURED EVENTS (2 stacked) ══════════════════════════════ */
+  .otd-featured {
+    flex: 0 0 auto;
+    border-bottom: 3px solid #ccc;
+  }
+
+  .otd-feat-item {
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+    padding: 0;
+  }
+
+  .otd-feat-item + .otd-feat-item {
+    border-top: 2px solid #e8e8e8;
+  }
+
+  .otd-feat-yr {
+    flex: 0 0 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: 700;
+    color: #111;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+    letter-spacing: -0.02em;
+    border-right: 3px solid #e8e8e8;
+    padding: 22px 0;
+  }
+
+  .otd-feat-body {
+    flex: 1;
+    padding: 20px 50px 20px 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .otd-feat-label {
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #aaa;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+    margin-bottom: 8px;
+  }
+
+  .otd-feat-text {
+    font-size: 30px;
+    line-height: 1.35;
+    color: #111;
+    font-weight: 400;
+  }
+
+  /* ═══ EVENTS GRID ═══════════════════════════════════════════════ */
+  .otd-events {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 60px;
+    align-content: start;
+  }
+
+  .otd-event {
+    display: flex;
+    gap: 18px;
+    padding: 13px 0;
+    border-bottom: 2px solid #e0e0e0;
+    align-items: baseline;
+  }
+
+  .otd-event-year {
+    font-size: 19px;
+    font-weight: 700;
+    color: #bbb;
+    min-width: 64px;
+    text-align: right;
+    flex-shrink: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+
+  .otd-event-text {
+    font-size: 22px;
+    line-height: 1.4;
+    color: #333;
+  }
+
+  /* ═══ BIRTHS + DEATHS ═══════════════════════════════════════════ */
+  .otd-people {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 5px solid #111;
+  }
+
+  .otd-people-col {
+    padding: 16px 60px 14px;
+  }
+
+  .otd-people-col:first-child {
+    border-right: 3px solid #ddd;
+  }
+
+  .otd-people-label {
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #aaa;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+    margin-bottom: 10px;
+  }
+
+  .otd-people-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 24px;
+  }
+
+  .otd-person {
+    font-size: 21px;
+    color: #444;
+    white-space: nowrap;
+  }
+
+  .otd-person-year {
+    font-size: 16px;
+    color: #bbb;
+    margin-right: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+  }
+
+  .otd-person-name {
+    font-style: italic;
+  }
+
+  /* ═══ EMPTY / ERROR STATE ═══════════════════════════════════════ */
+  .otd-loading {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    color: #ccc;
+    font-style: italic;
+  }
+</style>
+
+<div class="layout">
+  <div class="otd-root" id="otd-root">
+    <div class="otd-loading">Loading…</div>
+  </div>
+</div>
+
+
+<script>
+  // ── Fallback data when API is unavailable ──────────────────────────
+  const FALLBACK = {
+    selected: [
+      { year: 1969, text: "Apollo 11 astronauts Neil Armstrong and Buzz Aldrin become the first humans to walk on the Moon, while Michael Collins orbits above." }
+    ],
+    events: [
+      { year: 1756, text: "Black Hole of Calcutta: 123 British prisoners suffocate overnight in a dungeon of Fort William." },
+      { year: 1837, text: "Queen Victoria ascends to the throne of the United Kingdom at age 18 following the death of King William IV." },
+      { year: 1944, text: "Battle of the Philippine Sea concludes with a decisive Allied victory, effectively eliminating Japan's carrier-based air power." },
+      { year: 1975, text: "Jaws is released in the United States, becoming the first modern summer blockbuster." },
+      { year: 1990, text: "The Leaning Tower of Pisa is closed to the public due to safety concerns about its increasing tilt." },
+      { year: 2012, text: "WikiLeaks founder Julian Assange seeks asylum in Ecuador's London embassy, beginning a years-long diplomatic standoff." },
+      { year: 1967, text: "Muhammad Ali is sentenced to five years in prison and stripped of his boxing titles after refusing induction into the US Army." },
+      { year: 1789, text: "Members of the French Third Estate take the Tennis Court Oath, vowing to draft a constitution." },
+    ],
+    births: [
+      { year: 1819, text: "Jacques Offenbach, German-French composer known for operettas and the cancan", pages: [{ title: "Jacques Offenbach" }] },
+      { year: 1924, text: "Audie Murphy, American actor and most decorated US combat soldier of World War II", pages: [{ title: "Audie Murphy" }] },
+      { year: 1942, text: "Brian Wilson, American singer-songwriter and co-founder of The Beach Boys", pages: [{ title: "Brian Wilson" }] },
+      { year: 1949, text: "Lionel Richie, American singer and songwriter", pages: [{ title: "Lionel Richie" }] },
+    ],
+    deaths: [
+      { year: 1791, text: "King Louis XVI of France is arrested during the Flight to Varennes", pages: [{ title: "Flight to Varennes" }] },
+      { year: 1959, text: "Errol Flynn, Australian-American actor known for his swashbuckling film roles", pages: [{ title: "Errol Flynn" }] },
+      { year: 1960, text: "Chico Marx, American comedian and one of the Marx Brothers", pages: [{ title: "Chico Marx" }] },
+    ]
+  };
+
+  // ── Helpers ────────────────────────────────────────────────────────
+
+  const MONTHS = ['January','February','March','April','May','June',
+                  'July','August','September','October','November','December'];
+
+  function now() { return new Date(); }
+
+  function truncate(str, max) {
+    if (!str || str.length <= max) return str;
+    return str.slice(0, max).trimEnd() + '…';
+  }
+
+  function getName(item) {
+    if (item.pages && item.pages[0] && item.pages[0].title) return item.pages[0].title;
+    // fallback: grab everything before the first comma
+    return (item.text || '').split(',')[0].trim();
+  }
+
+  // ── Render ─────────────────────────────────────────────────────────
+
+  function render(data) {
+    const d      = now();
+    const day    = d.getDate();
+    const month  = MONTHS[d.getMonth()];
+
+    const events   = (data.events   || []).sort((a, b) => a.year - b.year);
+    const selected = (data.selected || []);
+    const births   = (data.births   || []).sort((a, b) => a.year - b.year);
+    const deaths   = (data.deaths   || []).sort((a, b) => a.year - b.year);
+
+    // Pick 2 featured events, rotating the starting index every hour
+    const featPool  = selected.length >= 2 ? selected : [...selected, ...events].slice(0, 6);
+    const slotIdx   = Math.floor(d.getHours() / 1) % Math.max(1, featPool.length - 1);
+    const featured1 = featPool[slotIdx]     || events[0] || { year: '', text: '' };
+    const featured2 = featPool[slotIdx + 1] || events[1] || { year: '', text: '' };
+
+    // Events: exclude the two featured ones, show up to 16 (2 columns × 8)
+    const featTexts = new Set([featured1.text, featured2.text]);
+    const evtList   = events.filter(e => !featTexts.has(e.text)).slice(0, 16);
+
+    // People: up to 5 births, 4 deaths
+    const bList = births.slice(0, 5);
+    const dList = deaths.slice(0, 4);
+
+    const root = document.getElementById('otd-root');
+
+    root.innerHTML = `
+      <!-- HEADER -->
+      <div class="otd-header">
+        <div class="otd-date">
+          <span class="otd-day">${day}</span>
+          <span class="otd-month">${month}</span>
+        </div>
+        <div class="otd-meta">
+          <div class="otd-label">On This Day</div>
+          <div class="otd-counts">${events.length} events &nbsp;·&nbsp; ${births.length} births &nbsp;·&nbsp; ${deaths.length} deaths</div>
+        </div>
+      </div>
+
+      <!-- FEATURED EVENTS (2 stacked) -->
+      <div class="otd-featured">
+        <div class="otd-feat-item">
+          <div class="otd-feat-yr">${featured1.year}</div>
+          <div class="otd-feat-body">
+            <div class="otd-feat-label">Featured</div>
+            <div class="otd-feat-text">${truncate(featured1.text, 200)}</div>
+          </div>
+        </div>
+        <div class="otd-feat-item">
+          <div class="otd-feat-yr">${featured2.year}</div>
+          <div class="otd-feat-body">
+            <div class="otd-feat-label">Featured</div>
+            <div class="otd-feat-text">${truncate(featured2.text, 200)}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EVENTS GRID -->
+      <div class="otd-events">
+        ${evtList.map(e => `
+          <div class="otd-event">
+            <span class="otd-event-year">${e.year}</span>
+            <span class="otd-event-text">${truncate(e.text, 120)}</span>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- BIRTHS + DEATHS -->
+      <div class="otd-people">
+        <div class="otd-people-col">
+          <div class="otd-people-label">Born on this day</div>
+          <div class="otd-people-list">
+            ${bList.map(b => `
+              <span class="otd-person">
+                <span class="otd-person-year">${b.year}</span>
+                <span class="otd-person-name">${getName(b)}</span>
+              </span>
+            `).join('')}
+          </div>
+        </div>
+        <div class="otd-people-col">
+          <div class="otd-people-label">Died on this day</div>
+          <div class="otd-people-list">
+            ${dList.map(x => `
+              <span class="otd-person">
+                <span class="otd-person-year">${x.year}</span>
+                <span class="otd-person-name">${getName(x)}</span>
+              </span>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+
+  }
+
+  // ── Fetch & refresh ────────────────────────────────────────────────
+
+  async function refresh() {
+    const d   = now();
+    const mm  = String(d.getMonth() + 1).padStart(2, '0');
+    const dd  = String(d.getDate()).padStart(2, '0');
+    const url = `https://en.wikipedia.org/api/rest_v1/feed/onthisday/all/${mm}/${dd}`;
+
+    try {
+      const res = await fetch(url, {
+        headers: { 'accept': 'application/json' }
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      render(await res.json());
+    } catch (_) {
+      render(FALLBACK);
+    }
+  }
+
+  // Initial load, then refresh at the top of every hour
+  refresh();
+
+  function scheduleNextHour() {
+    const d      = now();
+    const msLeft = (60 - d.getMinutes()) * 60000 - d.getSeconds() * 1000;
+    setTimeout(() => { refresh(); scheduleNextHour(); }, msLeft);
+  }
+  scheduleNextHour();
+</script>
